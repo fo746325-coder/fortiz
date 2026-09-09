@@ -4,75 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>francortiz.com</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf_viewer.min.css">
-  <style>
-    * { box-sizing: border-box; }
-    body { margin: 0; padding: 0; background-color: #525659; display: flex; flex-direction: column; align-items: center; }
-    #pdf-container { width: 100%; max-width: 900px; }
-    .page-container { position: relative; width: 100%; margin-bottom: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
-    canvas { width: 100% !important; height: auto !important; display: block; }
-    .annotationLayer { position: absolute; top: 0; left: 0; pointer-events: auto; }
-    .annotationLayer section { position: absolute; }
-    .annotationLayer a { cursor: pointer; position: absolute; width: 100%; height: 100%; }
-  </style>
+  <script>
+    window.location.replace("https://linktr.ee/francortiz");
+  </script>
 </head>
 <body>
-  <div id="pdf-container"></div>
-  <script>
-    const url = 'landing.pdf';
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-
-    pdfjsLib.getDocument(url).promise.then(pdf => {
-      const container = document.getElementById('pdf-container');
-      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
-        pdf.getPage(pageNum).then(page => {
-          const wrapper = document.createElement('div');
-          wrapper.className = 'page-container';
-          
-          const containerWidth = container.clientWidth || window.innerWidth;
-          const unscaledViewport = page.getViewport({ scale: 1 });
-          const scale = containerWidth / unscaledViewport.width;
-          const viewport = page.getViewport({ scale: scale });
-
-          const canvas = document.createElement('canvas');
-          const context = canvas.getContext('2d');
-          canvas.height = viewport.height;
-          canvas.width = viewport.width;
-          
-          wrapper.appendChild(canvas);
-          container.appendChild(wrapper);
-
-          page.render({ canvasContext: context, viewport: viewport }).promise.then(() => {
-            return page.getAnnotations();
-          }).then(annotations => {
-            const annotationLayer = document.createElement('div');
-            annotationLayer.className = 'annotationLayer';
-            annotationLayer.style.width = viewport.width + 'px';
-            annotationLayer.style.height = viewport.height + 'px';
-            wrapper.appendChild(annotationLayer);
-            
-            pdfjsLib.AnnotationLayer.render({
-              viewport: viewport.clone({ dontFlip: true }),
-              div: annotationLayer,
-              annotations: annotations,
-              page: page,
-              linkService: {
-                getDestinationHash: () => "#",
-                getAnchorUrl: (hash) => hash,
-                setHash: () => {},
-                executeNamedAction: () => {},
-                addLinkAttributes: (link, url) => {
-                  link.href = url;
-                  link.target = "_blank";
-                  link.rel = "noopener noreferrer";
-                }
-              }
-            });
-          });
-        });
-      }
-    });
-  </script>
 </body>
 </html>
